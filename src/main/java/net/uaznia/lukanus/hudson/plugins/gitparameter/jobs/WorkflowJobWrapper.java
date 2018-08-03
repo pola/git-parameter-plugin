@@ -12,16 +12,38 @@ import java.util.logging.Logger;
 import hudson.EnvVars;
 import hudson.FilePath;
 import hudson.model.Job;
+import hudson.model.ParametersDefinitionProperty;
 import hudson.model.TaskListener;
 import hudson.model.TopLevelItem;
 import hudson.scm.SCM;
 import jenkins.model.Jenkins;
+import org.jenkinsci.plugins.workflow.job.WorkflowJob;
+import org.jenkinsci.plugins.workflow.job.WorkflowRun;
+import org.jenkinsci.plugins.workflow.support.steps.input.InputAction;
 
 public class WorkflowJobWrapper extends AbstractJobWrapper {
     private static final Logger LOGGER = Logger.getLogger(WorkflowJobWrapper.class.getName());
 
     public WorkflowJobWrapper(Job job) {
         super(job);
+    }
+
+    @Override
+    public ParametersDefinitionProperty getProperty(Class<ParametersDefinitionProperty> propertyClass) {
+        ParametersDefinitionProperty property = super.getProperty(propertyClass);
+        if (property == null) {
+            property = tryToGetPropertyFromInputAction();
+        }
+        return property;
+    }
+
+    private ParametersDefinitionProperty tryToGetPropertyFromInputAction() {
+        WorkflowRun lastBuild = ((WorkflowJob) getJob()).getLazyBuildMixIn().getLastBuild();
+        if (lastBuild == null) {
+            return null;
+        }
+        InputAction action = lastBuild.getAction(InputAction.class);
+        return null;
     }
 
     @Override
