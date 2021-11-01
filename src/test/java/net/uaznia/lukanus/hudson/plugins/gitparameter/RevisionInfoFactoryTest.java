@@ -37,7 +37,7 @@ public class RevisionInfoFactoryTest {
     private static final String[] RAW_NO_AUTHOR = {"tree b9a246e842a5478fe01b52eb93e0e23cdb79f616",
             "parent 3409e0e7a3c0a2887b14c95d803b90f9314606aa",
             "committer klimas7 <klimas7@gmail.com> 2018-05-23T15:28:13+0200"};
-    private static final String SHORT_COMMIT_HASH_3 = COMMIT_HASH_3.substring(0, 8);
+    private static final String SHORT_COMMIT_HASH_3 = COMMIT_HASH_3.substring(0, 7);
 
     private static final String COMMIT_HASH_4 = "f36014bb502c66259cace1ac6a42317cb120d926";
     private static final ObjectId SHA1_4 = ObjectId.fromString(COMMIT_HASH_4);
@@ -69,25 +69,6 @@ public class RevisionInfoFactoryTest {
             "    Very_long_commit_message_with_no_space_Lorem_ipsum_dolor_sit_amet__consectetur_adipiscing_elit__sed_do_eiusmod_tempor_incididunt_ut_labore_et_dolore_magna_aliqua",
             "",
             ":100644 100644 ab9cfc8ef1c067ef36fb45741be8b9444ba7085c a01738c8f727254fdcf9d03fcb0965567104a31e M\tREADME.textile"};
-
-    @Test
-    public void testGetRevisions() throws InterruptedException {
-        GitClient gitClient = mock(GitClient.class);
-        when(gitClient.revListAll()).thenReturn(Arrays.asList(SHA1_1, SHA1_2, SHA1_4, SHA1_5));
-        when(gitClient.showRevision(SHA1_1)).thenReturn(Arrays.asList(RAW_1));
-        when(gitClient.showRevision(SHA1_2)).thenReturn(Arrays.asList(RAW_2));
-        when(gitClient.showRevision(SHA1_4)).thenReturn(Arrays.asList(RAW_4));
-        when(gitClient.showRevision(SHA1_5)).thenReturn(Arrays.asList(RAW_5));
-
-        RevisionInfoFactory revisionInfoFactory = new RevisionInfoFactory(gitClient, null);
-        List<RevisionInfo> revisions = revisionInfoFactory.getRevisions();
-
-        assertEquals(4, revisions.size());
-        assertEquals("ee650d9b 2018-04-16 21:11 klimas7 <klimas7@gmail.com> Version 0.9.2", revisions.get(0).getRevisionInfo());
-        assertEquals("b9a246e8 2018-05-23T15:28:13+0200 klimas7 <klimas7@gmail.com>", revisions.get(1).getRevisionInfo());
-        assertEquals("f36014bb 2015-02-12 17:07 Nick Whelan <nickw@indeed.com> Performance improvements Performance improvements when listing tags and branches. It's not necessary to perform a fetch operation when listing remote ...", revisions.get(2).getRevisionInfo());
-        assertEquals("c0c83cf1 2018-04-16 21:11 klimas7 <klimas7@gmail.com> Very_long_commit_message_with_no_space_Lorem_ipsum_dolor_sit_amet__consectetur_adipiscing_elit__sed_do_eiusmod_tempor_incididunt_ut_labore_et_dolore_m ...", revisions.get(3).getRevisionInfo());
-    }
 
     @Test
     public void testNoAuthor() throws InterruptedException {
